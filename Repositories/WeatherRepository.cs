@@ -60,7 +60,7 @@ public class WeatherRepository : IWeatherRepository
                     {
                         Date = forecastDate.ToString(CultureInfo.CurrentCulture),
                         Cloudiness = (int)relatedForecastsSeq.Average(x => x.Clouds!.All),
-                        WindSpeed = relatedForecastsSeq.Average(x => x.Wind!.Speed),
+                        WindSpeed = Math.Round(relatedForecastsSeq.Average(x => x.Wind!.Speed),2),
                         TemperatureMin = relatedForecastsSeq.Min(x => x.Main!.TemperatureMin),
                         TemperatureMax = relatedForecastsSeq.Max(x => x.Main!.TemperatureMax)
                     });

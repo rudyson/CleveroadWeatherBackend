@@ -14,7 +14,6 @@ public class WeatherBaseDto
     /// </summary>
     [JsonProperty("wind_speed")]
     public double WindSpeed { get; set; }
-    // TODO: Round double value on serialization
     /// <summary>
     /// Cloudiness provided in percents
     /// </summary>
