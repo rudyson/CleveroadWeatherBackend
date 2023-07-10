@@ -1,3 +1,4 @@
+using CleveroadWeatherBackend.Models.Dto;
 using CleveroadWeatherBackend.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -30,7 +31,7 @@ namespace CleveroadWeatherBackend.Controllers
         /// <response code="501">Contact OpenWeather API support</response>
         /// <response code="502">Contact OpenWeather API support</response>
         /// <response code="503">Contact OpenWeather API support</response>
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(WeatherCurrentDto))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -39,7 +40,7 @@ namespace CleveroadWeatherBackend.Controllers
         [ProducesResponseType(StatusCodes.Status501NotImplemented)]
         [ProducesResponseType(StatusCodes.Status502BadGateway)]
         [ProducesResponseType(StatusCodes.Status503ServiceUnavailable)]
-        [HttpGet("current")]
+        [HttpGet("current", Name = "Get weather in specific city")]
         public async Task<IActionResult> GetCurrentWeather(string? name)
         {
             try
@@ -89,7 +90,7 @@ namespace CleveroadWeatherBackend.Controllers
         /// <response code="501">Contact OpenWeather API support</response>
         /// <response code="502">Contact OpenWeather API support</response>
         /// <response code="503">Contact OpenWeather API support</response>
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(WeatherForecastDto))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status429TooManyRequests)]
@@ -97,7 +98,7 @@ namespace CleveroadWeatherBackend.Controllers
         [ProducesResponseType(StatusCodes.Status501NotImplemented)]
         [ProducesResponseType(StatusCodes.Status502BadGateway)]
         [ProducesResponseType(StatusCodes.Status503ServiceUnavailable)]
-        [HttpGet("forecast")]
+        [HttpGet("forecast", Name = "Get forecast in specific city")]
         public async Task<IActionResult> GetForecast(string? name)
         {
             try
