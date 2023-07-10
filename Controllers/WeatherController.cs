@@ -19,6 +19,7 @@ namespace CleveroadWeatherBackend.Controllers
         /// Current weather in the provided city
         /// </summary>
         /// <param name="name">Name of city (region and country are additional to specify location)</param>
+        /// <remarks>Get weather in specific city</remarks>
         /// <returns></returns>
         /// <response code="200">Successful response</response>
         /// <response code="400">Missing arguments</response>
@@ -39,10 +40,11 @@ namespace CleveroadWeatherBackend.Controllers
         [ProducesResponseType(StatusCodes.Status502BadGateway)]
         [ProducesResponseType(StatusCodes.Status503ServiceUnavailable)]
         [HttpGet("current")]
-        public async Task<IActionResult> GetCurrentWeather(string name)
+        public async Task<IActionResult> GetCurrentWeather(string? name)
         {
             try
             {
+                if (name == null) return BadRequest("Cannot complete request. Please provide name of the city (/current?name=...)");
                 var response = await _repository.GetCurrentWeather(name);
                 if (response == null)
                     return BadRequest("No response");
@@ -77,6 +79,7 @@ namespace CleveroadWeatherBackend.Controllers
         /// </summary>
         /// <param name="name">Name of city (region and country are additional to specify location)</param>
         /// <returns></returns>
+        /// <remarks>Get forecast in specific city</remarks>
         /// <response code="200">Successful response</response>
         /// <response code="400">Missing arguments</response>
         /// <response code="401">Wrong API key</response>
@@ -95,10 +98,11 @@ namespace CleveroadWeatherBackend.Controllers
         [ProducesResponseType(StatusCodes.Status502BadGateway)]
         [ProducesResponseType(StatusCodes.Status503ServiceUnavailable)]
         [HttpGet("forecast")]
-        public async Task<IActionResult> GetForecast(string name)
+        public async Task<IActionResult> GetForecast(string? name)
         {
             try
             {
+                if (name == null) return BadRequest("Cannot complete request. Please provide name of the city (/forecast?name=...)");
                 var response = await _repository.GetForecast5Days(name);
                 if (response == null)
                     return BadRequest("No response");
