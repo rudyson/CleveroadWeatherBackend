@@ -1,5 +1,6 @@
 using CleveroadWeatherBackend.Repositories;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace CleveroadWeatherBackend.Controllers
 {
@@ -31,6 +32,7 @@ namespace CleveroadWeatherBackend.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status429TooManyRequests)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status501NotImplemented)]
@@ -39,9 +41,36 @@ namespace CleveroadWeatherBackend.Controllers
         [HttpGet("current")]
         public async Task<IActionResult> GetCurrentWeather(string name)
         {
-            var response = await _repository.GetCurrentWeather(name);
-            if (response == null) return BadRequest("Make sure your API key is valid");
-            return Ok(response);
+            try
+            {
+                var response = await _repository.GetCurrentWeather(name);
+                if (response == null)
+                    return BadRequest("No response");
+                return Ok(response);
+            }
+            catch (HttpRequestException httpRequestException)
+            {
+                return new ObjectResult(httpRequestException.Message)
+                {
+                    StatusCode = (int)httpRequestException.StatusCode!
+                };
+            }
+            catch (JsonReaderException jsonReaderException)
+            {
+                var errorMessage =
+                    $"Cannot to parse JSON on [{jsonReaderException.LineNumber};{jsonReaderException.LinePosition}]: {jsonReaderException.Message}]";
+                return new ObjectResult(errorMessage)
+                {
+                    StatusCode = 415
+                };
+            }
+            catch (Exception e)
+            {
+                return new ObjectResult(e.Message)
+                {
+                    StatusCode = StatusCodes.Status500InternalServerError
+                };
+            }
         }
         /// <summary>
         /// Returns weather forecast for 5 days in selected city
@@ -68,9 +97,36 @@ namespace CleveroadWeatherBackend.Controllers
         [HttpGet("forecast")]
         public async Task<IActionResult> GetForecast(string name)
         {
-            var response = await _repository.GetForecast5Days(name);
-            if (response == null) return BadRequest("Make sure your API key is valid");
-            return Ok(response);
+            try
+            {
+                var response = await _repository.GetForecast5Days(name);
+                if (response == null)
+                    return BadRequest("No response");
+                return Ok(response);
+            }
+            catch (HttpRequestException httpRequestException)
+            {
+                return new ObjectResult(httpRequestException.Message)
+                {
+                    StatusCode = (int)httpRequestException.StatusCode!
+                };
+            }
+            catch (JsonReaderException jsonReaderException)
+            {
+                var errorMessage =
+                    $"Cannot to parse JSON on [{jsonReaderException.LineNumber};{jsonReaderException.LinePosition}]: {jsonReaderException.Message}]";
+                return new ObjectResult(errorMessage)
+                {
+                    StatusCode = 415
+                };
+            }
+            catch (Exception e)
+            {
+                return new ObjectResult(e.Message)
+                {
+                    StatusCode = StatusCodes.Status500InternalServerError
+                };
+            }
         }
     }
 }
